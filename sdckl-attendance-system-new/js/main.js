@@ -267,6 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.location.pathname.endsWith('login.html')) {
         const loginForm = document.getElementById('loginForm');
         const loginButton = document.getElementById('loginButton');
+        const biometricButton = document.getElementById('biometricButton');
+        const biometricStatus = document.getElementById('biometricStatus');
 
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -307,6 +309,40 @@ document.addEventListener('DOMContentLoaded', () => {
                     Sign in
                 `;
                 notifications.add('An error occurred during login', 'error');
+            }
+        });
+
+        biometricButton.addEventListener('click', async () => {
+            biometricStatus.classList.remove('hidden');
+            try {
+                const connected = await biometric.connect();
+                if (!connected) {
+                    notifications.add('Failed to connect to biometric device', 'error');
+                    biometricStatus.classList.add('hidden');
+                    return;
+                }
+                const scanResult = await biometric.scanFingerprint();
+                biometricStatus.classList.add('hidden');
+                if (scanResult.success) {
+                    // For demo, assume fingerprint data matches admin user
+                    appState.isAuthenticated = true;
+                    appState.currentUser = {
+                        id: 1,
+                        username: 'admin',
+                        role: 'admin',
+                        name: 'Administrator'
+                    };
+                    localStorage.setItem('user', JSON.stringify(appState.currentUser));
+                    notifications.add('Biometric login successful!', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                } else {
+                    notifications.add(scanResult.error || 'Biometric scan failed', 'error');
+                }
+            } catch (error) {
+                biometricStatus.classList.add('hidden');
+                notifications.add('Error during biometric login', 'error');
             }
         });
     }
