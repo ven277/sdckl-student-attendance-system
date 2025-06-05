@@ -1,4 +1,4 @@
--- MySQL database schema for SDCKL Student Attendance System (Fixed Syntax)
+-- MySQL database schema for SDCKL Student Attendance System (Including Students Feature)
 
 CREATE DATABASE IF NOT EXISTS sdckl_attendance;
 USE sdckl_attendance;
