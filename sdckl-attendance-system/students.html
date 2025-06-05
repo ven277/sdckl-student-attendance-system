@@ -31,7 +31,6 @@
                                 <i class="fas fa-user-graduate mr-2"></i> Students
                             </a>
                             <a href="classes.html" class="text-white hover:bg-red-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Classes</a>
-                            <!-- Removed Settings link -->
                             <a href="#" data-action="logout" class="text-white hover:bg-red-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Logout</a>
                         </div>
                     </div>
@@ -97,11 +96,8 @@
                 const students = JSON.parse(localStorage.getItem('students')) || [];
                 studentTableBody.innerHTML = '';
                 students.forEach((student, index) => {
-                    // Calculate eligibility
-                    const attendancePercentage = window.calculateAttendancePercentage(student.studentId);
+                    const attendancePercentage = calculateAttendancePercentage(student.studentId);
                     const eligibility = attendancePercentage >= 80 ? 'Eligible' : 'Not Eligible';
-
-                    console.log(`Student ID: ${student.studentId}, Attendance %: ${attendancePercentage.toFixed(2)}, Eligibility: ${eligibility}`);
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
@@ -140,16 +136,6 @@
                 saveStudents(students);
                 loadStudents();
                 studentForm.reset();
-            });
-
-            studentTableBody.addEventListener('click', (e) => {
-                if (e.target.classList.contains('deleteStudentBtn')) {
-                    const index = e.target.getAttribute('data-index');
-                    const students = JSON.parse(localStorage.getItem('students')) || [];
-                    students.splice(index, 1);
-                    saveStudents(students);
-                    loadStudents();
-                }
             });
 
             studentTableBody.addEventListener('input', (e) => {
